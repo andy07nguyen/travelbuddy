@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Success</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'black_belt/css/main.css' %}"media="screen" title="no title" charset="utf-8">
+  </head>
+  <body>
+<!-- SESSION CHECK: -->
+    <!-- <h1>{{request.session.id}} {{request.session.magic}}</h1> -->
+<!-- SESSION ID: -->
+    {% for i in frogs %}
+    <p>{{i.id}}</p>
+    {% endfor %}
+<!-- MESSAGE DISPLAY: -->
+    <div>
+      {% if messages %}
+      <ul class="messages">
+          {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+          {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+<!-- LOGOUT BUTTON: LOGGED IN -->
+    {% if request.session.magic == "loggedin" %}
+    <p>Successful logged in</p>
+    <form class="" action="/logout" method="post">
+      {% csrf_token %}
+      <input type="submit" name="submit" value="Logout">
+    </form>
+    {% endif %}
+<!-- LOGOUT BUTTON: REGISTERED -->
+    {% if request.session.magic == "registered" %}
+    <p>Successfully registered</p>
+    <a href="/logout">Logout</a>
+    {% endif %}
+<!-- SESSION CHECK: -->
+    <!-- <h3>ID: {{request.session.id}}</h3>
+    <h3>First Name: {{currentUser.first_name}}</h3>
+    <h3>Last Name: {{currentUser.last_name}}</h3>
+    <h3>Created At: {{currentUser.created_at}}</h3>
+    <h3>Updated At: {{currentUser.updated_at}}</h3> -->
+<!-- YOUR TRIP TABLE: -->
+    <h1>Hello, {{currentUser.first_name}}!</h1>
+    <table>
+      <tr>
+        <label for="">Your Trip Schedules</label>
+        <th>Destination:</th>
+        <th>Travel Start Date:</th>
+        <th>Travel End Date:</th>
+        <th>Plan:</th>
+        <th>Action:</th>
+      </tr>
+      {% for i in trip %}
+      <tr>
+        <td>{{i.destination}}</td>
+        <td>{{i.travelfrom}}</td>
+        <td>{{i.travelto}}</td>
+        <td>{{i.description}}</td>
+        <td><a href="{% url 'remove_url' i.id %}">Remove</a></td>
+      {% endfor %}
+      </tr>
+    </table>
+<!-- ADD TRIP BUTTON: -->
+    <form class="" action="/add" method="post">
+      {% csrf_token %}
+      <input type="submit" name="submit" value="Add Trip">
+    </form>
+<!-- USER'S TRAVEL PLAN -->
+    <table>
+      <tr>
+        <label for="">Other User's Travel Plans</label>
+        <th>Name:</th>
+        <th>Destination:</th>
+        <th>Travel Start Date:</th>
+        <th>Travel End Date:</th>
+        <th>Do You Want To Join?</th>
+      </tr>
+      {% for i in OtherUserTripData %}
+      <tr>
+        <td>{{i.user_id.first_name}} {{i.user_id.last_name}}</td>
+        <td><a href="{% url 'show_url' i.id %}">{{i.destination}}</a></td>
+        <td>{{i.travelfrom}}</td>
+        <td>{{i.travelto}}</td>
+        <td><a href="{% url 'join_url' i.id %}">Join</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>
